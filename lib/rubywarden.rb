@@ -43,10 +43,23 @@ IDENTITY_BASE_URL = (ENV["RUBYWARDEN_IDENTITY_BASE_URL"] || "/identity")
 ICONS_URL = (ENV["RUBYWARDEN_ICONS_URL"] || "/icons")
 ATTACHMENTS_URL = (ENV["RUBYWARDEN_ATTACHMENTS_URL"] || "/attachments")
 
+conf_file = File.open(ENV["RUBYWARDEN_CONF"])
+
+for conf in conf_file.readlines.map(&:chomp) do
+  if conf.include? "ALLOW_SIGNUPS"
+    num = conf.split('=')[1].to_i
+    if num.to_s == conf.split('=')[1]
+      ALLOW_SIGNUPS = num
+    else
+      ALLOW_SIGNUPS = false
+    end
+  end
+end  
+
 # whether to allow new users
-if !defined?(ALLOW_SIGNUPS)
-  ALLOW_SIGNUPS = (ENV["RUBYWARDEN_ALLOW_SIGNUPS"] || ENV["ALLOW_SIGNUPS"] || false)
-end
+#if !defined?(ALLOW_SIGNUPS)
+#  ALLOW_SIGNUPS = (ENV["RUBYWARDEN_ALLOW_SIGNUPS"] || ENV["ALLOW_SIGNUPS"] || false)
+#end
 
 # create/load JWT signing keys
 Bitwarden::Token.load_keys
