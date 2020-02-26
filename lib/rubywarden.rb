@@ -44,8 +44,10 @@ ICONS_URL = (ENV["RUBYWARDEN_ICONS_URL"] || "/icons")
 ATTACHMENTS_URL = (ENV["RUBYWARDEN_ATTACHMENTS_URL"] || "/attachments")
 
 conf_file = File.open(ENV["RUBYWARDEN_CONF"])
+data = conf_file.readlines.map(&:chomp)
+conf_file.close()
 
-for conf in conf_file.readlines.map(&:chomp) do
+for conf in data do
   if conf.include? "ALLOW_SIGNUPS"
     num = conf.split('=')[1].to_i
     if num.to_s == conf.split('=')[1]
